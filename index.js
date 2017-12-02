@@ -1,17 +1,19 @@
 /**
- * Triggered from a message on a Cloud Pub/Sub topic.
+ * Responds to any HTTP request that can provide a "message" field in the body.
  *
- * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
+ * @param {!Object} req Cloud Function request context.
+ * @param {!Object} res Cloud Function response context.
  */
-  exports.subscribe = function subscribe(event, callback) {
-  // The Cloud Pub/Sub Message object.
-  const pubsubMessage = event.data;
-
-  // We're just going to log the message to prove that
-  // it worked.
-  console.log(Buffer.from(pubsubMessage.data, 'base64').toString());
-
-  // Don't forget to call the callback.
-  callback();
+exports.helloWorld = function helloWorld(req, res) {
+  // Example input: {"message": "Hello!"}
+  if (req.body.message === undefined) {
+    // This is an error case, as "message" is required.
+    res.status(400).send('No message defined!');
+  } else {
+    // Everything is okay.
+    console.log(req.body.message);
+    res.status(200).send('Success: ' + req.body.message);
+  }
 };
+
+
